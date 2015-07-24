@@ -14,6 +14,22 @@ class EditorCollectionPlugin(octoprint.plugin.TemplatePlugin):
 			dict(type="settings", custom_bindings=False)
 		]
 
+	def get_update_information(self):
+		return dict(
+			editorcollection=dict(
+				displayName="Editor Collection Plugin",
+				displayVersion=self._plugin_version,
+
+				# version check: github repository
+				type="github_release",
+				user="Salandora",
+				repo="OctoPrint-EditorCollection",
+				current=self._plugin_version,
+
+				# update method: pip
+				pip="https://github.com/Salandora/OctoPrint-EditorCollection/archive/{target_version}.zip"
+			)
+		)
 
 
 # If you want your plugin to be registered within OctoPrint under a different name than what you defined in setup.py
@@ -26,4 +42,7 @@ def __plugin_load__():
 	__plugin_implementation__ = EditorCollectionPlugin()
 
 	global __plugin_hooks__
-	__plugin_hooks__ = {"octoprint.ui.web.templatetypes": __plugin_implementation__.templatehook}
+	__plugin_hooks__ = {
+		"octoprint.ui.web.templatetypes": __plugin_implementation__.templatehook,
+		"octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information
+	}
